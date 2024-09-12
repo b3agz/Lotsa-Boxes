@@ -30,22 +30,23 @@ namespace LotsaBoxes {
 
 		}
 
-		public Mesh GetMesh(int[,,] map, Vector3 chunkPos) {
+		public Mesh GetMesh(ChunkData chunkData, Vector3 chunkPos) {
 
 			_indiceCount = 0;
 			_surfaceTool = new();
 			_surfaceTool.Begin(Mesh.PrimitiveType.Triangles);
 			
+			// Loop through every position in the chunk.
 			for (int x = 0; x < Chunk.WIDTH; x++) {
 				for (int z = 0; z < Chunk.WIDTH; z++) {
 					for (int y = 0; y < Chunk.HEIGHT; y++) {
-						if (map[x,y,z] > 0) {
+
+						// Get the current block.
+						BlockData block = chunkData.UnsafeGetBlock(x, y, z);
+						if (!block.Air) {
 							for (int i = 0; i < MeshRepository.Cube.Sides.Length; i++) {
-								Vector3I v3 = new Vector3I (x,y,z) + MeshRepository.Cube.Sides[i].Neighbour;
-								if (IsPosInsideChunk(v3) && map[v3.X, v3.Y, v3.Z] == 0) {
-									AddToMesh(i, new Vector3(x, y, z), map[x,y,z]);
-								} else if (!IsPosInsideChunk(v3) && !Manager.Instance.World.IsBlockSolid(v3 + chunkPos)) {
-									AddToMesh(i, new Vector3(x, y, z), map[x,y,z]);
+								if (block.RenderFace(i)) {
+									AddToMesh(i, new Vector3(x, y, z), block.ID);
 								}
 							}
 						}

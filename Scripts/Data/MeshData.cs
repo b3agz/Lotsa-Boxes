@@ -1,13 +1,26 @@
 using Godot;
+using Godot.NativeInterop;
 
 namespace LotsaBoxes.Data {
 
     public static class MeshRepository {
 
+        public static Vector3I[] NeighbourOffset = new Vector3I[] {
+            new (0,0,1),
+            new (0,0,-1),
+            new (1,0,0),
+            new (-1,0,0),
+            new (0,1,0),
+            new (0,-1,0),
+        };
+
+        public static int[] InverseNeighbourOffset = new int[] {
+            1, 0, 3, 2, 5, 4
+        };
+
         public static ShapeData Cube = new ShapeData (
             "Cube",
             new MeshData (  // Front Face
-            new Vector3I(0,0,1),
             new VertData[] {
                 new VertData(new Vector3(0,0,0), new Vector3(0,0,1), new Vector2(0,0)),
                 new VertData(new Vector3(0,1,0), new Vector3(0,0,1), new Vector2(0,1)),
@@ -18,7 +31,6 @@ namespace LotsaBoxes.Data {
             ),
 
             new MeshData (  // Back Face
-            new Vector3I(0,0,-1),
             new VertData[] {
                 new VertData(new Vector3(-1,0,-1), new Vector3(0,0,-1), new Vector2(0,0)),
                 new VertData(new Vector3(-1,1,-1), new Vector3(0,0,-1), new Vector2(0,1)),
@@ -29,7 +41,6 @@ namespace LotsaBoxes.Data {
             ),
             
             new MeshData (  // Left Face
-            new Vector3I(1,0,0),
             new VertData[] {
                 new VertData(new Vector3(0,0,-1), new Vector3(-1,0,0), new Vector2(0,0)),
                 new VertData(new Vector3(0,1,-1), new Vector3(-1,0,0), new Vector2(0,1)),
@@ -40,7 +51,6 @@ namespace LotsaBoxes.Data {
             ),
             
             new MeshData (  // Right Face
-            new Vector3I(-1,0,0),
             new VertData[] {
                 new VertData(new Vector3(-1,0,0), new Vector3(1,0,0), new Vector2(0,0)),
                 new VertData(new Vector3(-1,1,0), new Vector3(1,0,0), new Vector2(0,1)),
@@ -51,7 +61,6 @@ namespace LotsaBoxes.Data {
             ),
             
             new MeshData (  // Top Face
-            new Vector3I(0,1,0),
             new VertData[] {
                 new VertData(new Vector3(0,1,0), new Vector3(0,1,0), new Vector2(0,0)),
                 new VertData(new Vector3(0,1,-1), new Vector3(0,1,0), new Vector2(0,1)),
@@ -62,7 +71,6 @@ namespace LotsaBoxes.Data {
             ),
             
             new MeshData (  // Bottom Face
-            new Vector3I(0,-1,0),
             new VertData[] {
                 new VertData(new Vector3(-1,0,0), new Vector3(0,-1,0), new Vector2(0,0)),
                 new VertData(new Vector3(-1,0,-1), new Vector3(0,-1,0), new Vector2(0,1)),
@@ -98,10 +106,8 @@ namespace LotsaBoxes.Data {
 
         public VertData[] Verts;
         public int[] Indices;
-        public Vector3I Neighbour;
 
-        public MeshData (Vector3I neighbour, VertData[] verts, int[] indices) {
-            Neighbour = neighbour;
+        public MeshData (VertData[] verts, int[] indices) {
             Verts = verts;
             Indices = indices;
         }

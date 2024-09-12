@@ -1,4 +1,5 @@
 using Godot;
+using LotsaBoxes.Data;
 using System;
 
 namespace LotsaBoxes {
@@ -11,7 +12,7 @@ namespace LotsaBoxes {
 		[Export] private MeshInstance3D _meshInstance;
 		public Vector3 PositionKey => GlobalPosition.Floor();
 
-		private int[,,] _map;
+		private ChunkData _chunkData;
 		
 		public override void _Ready() {
 			//Initialise();
@@ -19,22 +20,28 @@ namespace LotsaBoxes {
 
 		public void Initialise() {
 			PopulateChunk();
-			_meshInstance.Mesh = Manager.Instance.MeshGenerator.GetMesh(_map, PositionKey);
 			Manager.Instance.World.AddChunk(this);
+		}
+
+		public void UpdateMesh() {
+			_meshInstance.Mesh = Manager.Instance.MeshGenerator.GetMesh(_chunkData, PositionKey);
 		}
 
 		public void PopulateChunk() {
 
-			_map = new int[WIDTH, HEIGHT, WIDTH];
+			_chunkData = new(GlobalPosition);
+			int[,,] map = new int[WIDTH, HEIGHT, WIDTH];
 			for (int x = 0; x < WIDTH; x++) {
 				for (int z = 0; z < WIDTH; z++) {
 					for (int y = 0; y < HEIGHT; y++) {
-						_map[x,y,z] = (y > 10) ? 0 : 1;
-						if (y == 0) _map[x,y,z] = 4;
-						if (y == 10) _map[x,y,z] = 2;
+
+						map[x,y,z] = (y > 10) ? 0 : 1;
+						if (y == 0) map[x,y,z] = 4;
+						if (y == 10) map[x,y,z] = 2;
 					}
 				}
 			}
+			_chunkData.SetBlocks(map);
 		}
 
 		
@@ -48,7 +55,7 @@ namespace LotsaBoxes {
 
 			Vector3 localPos = ConvertToLocalPos(position);
 			if (IsLocalPosInsideChunk(localPos)) {
-				return _map[(int)localPos.X, (int)localPos.Y, (int)localPos.Z] > 0;
+				return _chunkData.UnsafeGetBlock(localPos).IsSolid;
 			}
 			return false;
 
@@ -74,6 +81,8 @@ namespace LotsaBoxes {
 				pos.Y >= 0 && pos.Y < Chunk.HEIGHT
 			);
 		}
+
+		public BlockData GetBlock(Vector3 localPos) => _chunkData.GetBlock(localPos);
 
 		/// <summary>
 		/// Takes in a local position and returns true if that position is within the boundaries of a chunk.

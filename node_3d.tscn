@@ -37,7 +37,7 @@ script = ExtResource("4_47ku3")
 _chunkMaterial = ExtResource("2_bcgex")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 25)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 22, 25)
 fov = 77.3
 script = ExtResource("4_0ji6h")
 

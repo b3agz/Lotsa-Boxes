@@ -1,4 +1,5 @@
 using Godot;
+using LotsaBoxes.Data;
 using System;
 using System.Collections.Generic;
 
@@ -21,11 +22,22 @@ namespace LotsaBoxes {
 				}
 			}
 
+			UpdateChunks();
+
 		}
 
-		
 		public override void _Process(double delta) {
-			
+
+			if (Input.IsPhysicalKeyPressed(Key.End)) {
+				UpdateChunks();
+			}
+
+		}
+
+		public void UpdateChunks() {
+			foreach(KeyValuePair<Vector3, Chunk> chunk in Chunks) {
+					chunk.Value.UpdateMesh();
+			}
 		}
 
 		public bool AddChunk(Chunk chunk) {
@@ -48,6 +60,7 @@ namespace LotsaBoxes {
 			if (Chunks.ContainsKey(pos)) {
 				return Chunks[pos];
 			}
+			GD.Print("Chunk is null " + pos);
 			return null;
 
 		}
@@ -57,6 +70,16 @@ namespace LotsaBoxes {
 			Chunk chunk = GetChunkAtPos(position);
 			if (chunk == null) return false;
 			return chunk.IsBlockSolid(position);
+
+		}
+
+		public BlockData GetBlock(Vector3 globalPosition) {
+			
+			Chunk chunk = GetChunkAtPos (globalPosition);
+			if (chunk == null) {
+				return null;
+			}
+			return chunk.GetBlock(chunk.ConvertToLocalPos(globalPosition));
 
 		}
 
