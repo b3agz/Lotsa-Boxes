@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://ctoh0vx8r75qp"]
+
+[ext_resource type="Script" path="res://Scripts/Chunk/Chunk.cs" id="1_2686e"]
+
+[node name="Chunk" type="Node3D" node_paths=PackedStringArray("_meshInstance")]
+script = ExtResource("1_2686e")
+_meshInstance = NodePath("Mesh")
+
+[node name="Mesh" type="MeshInstance3D" parent="."]

@@ -1,0 +1,48 @@
+[gd_scene load_steps=10 format=3 uid="uid://rp0035qoxkig"]
+
+[ext_resource type="Script" path="res://Scripts/World.cs" id="1_43bs3"]
+[ext_resource type="PackedScene" uid="uid://ctoh0vx8r75qp" path="res://Prefabs/Chunk.tscn" id="2_0cpel"]
+[ext_resource type="Material" uid="uid://fepeojm6oejb" path="res://new_standard_material_3d.tres" id="2_bcgex"]
+[ext_resource type="Script" path="res://Scripts/Manager.cs" id="3_8082g"]
+[ext_resource type="Script" path="res://Scripts/camera.gd" id="4_0ji6h"]
+[ext_resource type="Script" path="res://Scripts/Chunk/MeshGenerator.cs" id="4_47ku3"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_5pt1l"]
+
+[sub_resource type="Sky" id="Sky_5gxv6"]
+sky_material = SubResource("ProceduralSkyMaterial_5pt1l")
+
+[sub_resource type="Environment" id="Environment_laoqf"]
+background_mode = 2
+sky = SubResource("Sky_5gxv6")
+ambient_light_source = 3
+ambient_light_color = Color(0.920123, 0.751364, 0.977132, 1)
+reflected_light_source = 2
+
+[node name="Node3D" type="Node3D"]
+
+[node name="World" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 25)
+script = ExtResource("1_43bs3")
+_chunkPrefab = ExtResource("2_0cpel")
+
+[node name="Manager" type="Node" parent="." node_paths=PackedStringArray("World", "MeshGenerator", "Camera")]
+script = ExtResource("3_8082g")
+World = NodePath("../World")
+MeshGenerator = NodePath("MeshGenerator")
+Camera = NodePath("../Camera3D")
+
+[node name="MeshGenerator" type="Node" parent="Manager"]
+script = ExtResource("4_47ku3")
+_chunkMaterial = ExtResource("2_bcgex")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 25)
+fov = 77.3
+script = ExtResource("4_0ji6h")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.41005, 0.912063, 0, -0.912063, 0.41005, 0.65812, 31.9224, 3.96931)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="DirectionalLight3D"]
+environment = SubResource("Environment_laoqf")
